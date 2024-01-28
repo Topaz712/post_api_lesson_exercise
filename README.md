@@ -1,24 +1,50 @@
-# README
+# Exercise for lesson "One-to-many: belongs to and has many associations"
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+- Create a new Rails application as an API of course, then create the following tables
+  - post
+    - title:string
+    - body:text
+  
+  - comment
+    - post:references
+    - body:text
+    - published:boolean
+      
+- Create a one-to-many relationship between the post and comment table.
 
-Things you may want to cover:
+- Then create a new post along with their comments.
 
-* Ruby version
+Answer:
 
-* System dependencies
+1. run  `rails new post_api_lesson_exercise --api`
 
-* Configuration
+2. In vscode terminal run `rails generate model Post title:string body:text`
+Then after this, run `rails generate model Comment post:references body:text published:boolean`
 
-* Database creation
+3. In *post.rb* and *comment.rb files, located in app/models/ add the following code:
 
-* Database initialization
+post.rb:
+```
+class Post < ApplicationRecord
+  validates :title, presence: true, uniqueness: true
+  validates :body, presence: true
 
-* How to run the test suite
+  has_many :comments
+end
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+comment.rb:
+```
+class Comment < ApplicationRecord
+  validates :body, presence: true
 
-* Deployment instructions
+  belongs_to :post
+end
+```
 
-* ...
+4. Now in vscode terminal run:
+`rails db:migrate`
+
+5. Now that we ran the migrations to create the database tables, we run `rails console` to create a new post with the comment
+
+6. Run in rails console: `post = Post.create(title: "Hello World", body: "This is my first post", comments: [Comment.new(body: "This is my first comment", published: true)])`
